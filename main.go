@@ -19,5 +19,5 @@ func main() {
 	fmt.Println("🔌 WS → ws://localhost:8080/ws")
 	fmt.Println("🔌 Ring → ws://localhost:8080/ring")
 
-	log.Fatal(http.ListenAndServe(Port, nil))
+	log.Fatal(http.ListenAndServe(fmt.Sprintf("0.0.0.0:%s", Port), nil))
 }
