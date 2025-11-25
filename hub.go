@@ -69,32 +69,3 @@ func (h *Hub) Listen(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 }
-
-func (h *Hub) Control(w http.ResponseWriter, r *http.Request) {
-	pw := r.URL.Query().Get("password")
-	if pw != Password {
-		http.Error(w, "Unauthorized", http.StatusUnauthorized)
-		return
-	}
-
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println("WS upgrade (control) failed:", err)
-		return
-	}
-
-	for {
-		_, msg, err := conn.ReadMessage()
-		if err != nil {
-			conn.Close()
-			return
-		}
-
-		switch string(msg) {
-		case "ring":
-			h.Broadcast("ring")
-		default:
-			log.Println("Unknown control command:", string(msg))
-		}
-	}
-}
