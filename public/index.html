@@ -3,6 +3,7 @@
 
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <title>wakeup ui</title>
 
@@ -10,41 +11,47 @@
 </head>
 
 <body>
-  <div class="w-screen h-screen flex items-center justify-center">
-    <div class="max-w-sm flex flex-col justify-center gap-4">
+  <div class="w-screen min-h-screen flex items-center justify-center p-4">
+    <form class="w-full max-w-sm flex flex-col justify-center gap-4" id="form">
       <input class="rounded-2xl border border-gray-300 py-2 px-4 w-full" id="password" type="password"
-        placeholder="Password" />
+        placeholder="Password" required />
 
       <div class="flex flex-col items-center gap-2">
-        <button class="px-6 py-1.5 text-white w-min bg-blue-500 disabled:opacity-25 text-center rounded-full" id="ring">
+        <button class="px-6 py-1.5 text-white w-min bg-blue-500 text-center rounded-full" type="submit">
           Ring
         </button>
       </div>
-    </div>
+    </form>
   </div>
 
   <script>
-    const ring = async () => {
+    const ring = async (e) => {
+      e.preventDefault();
+
       const password = document.querySelector("#password").value.trim();
       if (!password) {
-        alert("Enter password");
-
-        return;
+        alert("Enter password")
+        return
       }
 
       try {
-        await fetch(`http://${location.host}/ring`, {
+        const response = await fetch(`http://${location.host}/ring`, {
           method: "POST",
           body: JSON.stringify({
             password,
           }),
-        });
+        })
+
+        if (!response.ok) {
+          alert("Failed to ring")
+          return
+        }
       } catch (error) {
         console.error(error);
       }
-    };
+    }
 
-    document.querySelector("#ring").addEventListener("click", ring);
+    document.querySelector("#form").addEventListener("submit", ring);
   </script>
 </body>
 
